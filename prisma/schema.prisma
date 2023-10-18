@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @map("_id") @default(cuid())
+  email String @unique
+  password String
+  name String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+type SocialLinks {
+  name String
+  link String
+}
+
+model Artist {
+  id String @id @map("_id") @default(cuid())
+  name String
+  bio String
+  imageSrc String
+  location String
+  email String
+  socialLinks SocialLinks[]
+  photosUrls String[]
+  videosUrls String[]
+  genres String[]
+
+  releases Release[]
+  events Event[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+type Venue {
+  name String
+  location String
+  socialLink String
+}
+
+model Event {
+  id String @id @map("_id") @default(cuid())
+  name String
+  description String
+  date String
+  imageSrc String
+  venue Venue?
+
+  artistId String
+  artist Artist @relation(fields: [artistId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model Release {
+  id String @id @map("_id") @default(cuid())
+  name String
+  description String
+  date String
+  imageSrc String
+  soundCloudLink String?
+  buyLink String?
+  label String
+
+  artistId String
+  artist Artist @relation(fields: [artistId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
