@@ -1,6 +1,5 @@
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
-import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -8,8 +7,6 @@ import { neobrutalism } from "@clerk/themes";
 import { Toaster } from "@/components/ui/toaster";
 
 const font = Inter({ subsets: ["latin"] });
-
-
 
 export const colors = [
   "#007BFF",
@@ -22,13 +19,13 @@ export const colors = [
   "#DC3545",
 ];
 
-export default function RootLayout({
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
-
+  
   return (
     <ClerkProvider
       appearance={{
@@ -44,7 +41,7 @@ export default function RootLayout({
           userButtonPopoverActionButtonIcon: {
             color: "#ffffff",
           },
-        }
+        },
       }}
     >
       <html lang="en" suppressHydrationWarning>
@@ -54,9 +51,7 @@ export default function RootLayout({
             defaultTheme="dark"
             disableTransitionOnChange
           >
-            <main>
-            {children}
-            </main>
+            <main>{children}</main>
             <Toaster />
           </ThemeProvider>
         </body>

@@ -12,14 +12,14 @@ import {
 import { Event } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Delete, Edit2, MoreHorizontal, Plus } from "lucide-react";
-import NewEventModal from "../../modals/EventModal";
+import NewEventModal from "../../modals/event-modal";
 import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import DeleteModal from "../../modals/DeleteModal";
+import DeleteModal from "../../modals/delete-modal";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
-import EventModal from "../../modals/EventModal";
+import EventModal from "../../modals/event-modal";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -44,29 +44,74 @@ export const EventsColumnsTable: ColumnDef<Event>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  {
+    accessorKey: "imageSrc",
+    header: "Flyer/Art",
+    cell: ({ row }) => {
+      const imageSrc = row.original.imageSrc;
+      return (
+        <div className="">
+          <img
+            className="w-12 h-12 object-cover rounded-md object-center"
+            src={imageSrc as string}
+            alt=""
+          />
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "name",
+    header: "Event Name",
+    cell: ({ row }) => {
+      const name = row.original.name;
 
+      return (
+        <div>
+          <p>{name}</p>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "date",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Date" />;
+    },
+    cell: ({ row }) => {
+      const date = row.original.date;
+      return (
+        <div>
+          <p>{date}</p>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "venue.name",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Venue" />;
+    },
+    cell: ({ row }) => {
+      const venueName = row.original.venue?.name;
+      return (
+        <div>
+          <p>{venueName}</p>
+        </div>
+      );
+    },
+  },
   {
     id: "actions",
+    header: "Actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: ({ row }: { row: any }) => {
       const event = row.original;
-      const { toast } = useToast();
-      const router = useRouter();
-      const handleDelete = async () => {
-        const response = await axios.delete(`/api/events?eventId=${event.id}`);
-        if (response.status === 200) {
-          toast({
-            title: `Event deleted`,
-            description: `${event.name} deleted successfully`,
-          });
-          router.refresh();
-        }
-      };
 
       return (
         <div className="flex flex-row gap-1 items-end justify-end">
           <EventModal event={event} />
-          <DeleteModal item={event.name} handleDelete={handleDelete} />
+          <DeleteModal item={event} apiUrl={`/api/events?eventId=${event.id}`} />
         </div>
       );
     },

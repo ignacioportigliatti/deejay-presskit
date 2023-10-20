@@ -26,110 +26,118 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
-import FileUpload from "@/components/FileUpload";
+import FileUpload from "@/components/file-upload";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import { Artist, Release } from "@prisma/client";
+import { Artist, Event } from "@prisma/client";
 import { Edit } from "lucide-react";
 
-interface NewReleaseModalProps {
+interface NewEventModalProps {
   artist?: Artist;
-  release?: Release;
+  event?: Event;
 }
 
-const releaseFormSchema = z.object({
-  name: z.string().min(2).max(50),
-  label: z.string().min(2).max(50),
-  date: z.string().min(2).max(50),
-  imageSrc: z.string().url(),
-  soundCloudLink: z.string().url(),
-  buyLink: z.string().max(100).optional(),
-  description: z.string().max(150).optional(),
+const eventFormSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().max(150, {
+    message: "Description must be less than 150 characters",
+  }).optional(),
+  date: z.string(),
+  imageSrc: z.string(),
+  venue: z.object({
+    name: z.string(),
+    location: z.string(),
+    socialLink: z.string().optional(),
+  }),
+  artistId: z.string(),
 });
 
-const ReleaseModal = (props: NewReleaseModalProps) => {
-  const { artist, release } = props;
-  const form = useForm<z.infer<typeof releaseFormSchema>>({
+const EventModal = (props: NewEventModalProps) => {
+  const { artist, event } = props;
+  const [open, setOpen] = React.useState(false);
+  const form = useForm<z.infer<typeof eventFormSchema>>({
     defaultValues: {
-      name: release?.name,
-      label: release?.label,
-      date: release?.date,
-      imageSrc: release?.imageSrc,
-      soundCloudLink: release?.soundCloudLink as string,
-      buyLink: release?.buyLink as string,
-      description: release?.description,
+      name: event ? event.name : "",
+      description: event ? event.description : "",
+      date: event ? event.date : "",
+      imageSrc: event ? event.imageSrc : "",
+      venue: {
+        name: event ? event.venue.name : "",
+        location: event ? event.venue.location : "",
+        socialLink: event ? event.venue.socialLink : "",
+      },
+      artistId: event ? event.artistId : artist?.id,
     },
-    resolver: zodResolver(releaseFormSchema),
+    resolver: zodResolver(eventFormSchema),
   });
 
   const { toast } = useToast();
 
   const router = useRouter();
 
-  const onSubmit = async (values: z.infer<typeof releaseFormSchema>) => {
-    const newRelease = {
-      name: values.name,
-      label: values.label,
-      date: values.date,
-      imageSrc: values.imageSrc,
-      soundCloudLink: values.soundCloudLink,
-      buyLink: values.buyLink,
-      description: values.description,
-      artistId: artist?.id,
+  const onSubmit = async (values: z.infer<typeof eventFormSchema>) => {
+    const newEvent = {
+      ...values,
     };
 
     try {
-      if (release) {
-        const response = await axios.patch("/api/releases", {
-          ...newRelease,
-          id: release.id,
+      if (event) {
+        const response = await axios.patch("/api/events", {
+          ...newEvent,
+          id: event.id,
         });
         if (response.status === 200) {
-          form.reset();
           router.refresh();
           toast({
-            title: "Release updated",
-            description: `${response.data.name} by ${artist?.name} updated successfully}`,
+            title: "Event updated",
+            description: `${response.data.name} updated successfully}`,
           });
         }
+        setOpen(false);
       } else {
-        const response = await axios.post("/api/releases", newRelease);
+        const response = await axios.post("/api/events", {...newEvent, artistId: artist?.id});
         if (response.status === 200) {
           form.reset();
           router.refresh();
           toast({
-            title: "Release created",
-            description: `${response.data.name} by ${artist?.name} created successfully}`,
+            title: "Event created",
+            description: `${response.data.name} created successfully}`,
           });
         }
+        setOpen(false);
       }
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+      });
+      setOpen(false);
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {release ? (
+        {event ? (
           <Button className="w-max px-2" size={"xs"} variant={"defaultButton"}>
             <Edit className="w-4" />
           </Button>
         ) : (
           <Button className="w-16" size={"xs"} variant={"defaultButton"}>
-            + Add
+            + Add {artist?.id}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="w-11/12 sm:w-full">
         <DialogHeader>
           <DialogTitle>
-            {release ? `Edit ${release.name}` : "Add Release"}
+            {event ? `Edit ${event.name}` : "Add Event"}
           </DialogTitle>
           <DialogDescription>
-            Add a new release to your artist's presskit.
+           {"Add a new event to your artist's presskit."}
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[80vh]">
@@ -144,12 +152,12 @@ const ReleaseModal = (props: NewReleaseModalProps) => {
                     control={form.control}
                     name="name"
                     render={({ field }) => (
-                      <FormItem className="space-y-1 w-full">
-                        <FormLabel className="sr-only">Release Name</FormLabel>
+                      <FormItem className="space-y-1 w-[49%]">
+                        <FormLabel className="sr-only">Event Name</FormLabel>
                         <FormControl>
                           <Input
                             id="name"
-                            placeholder="Release Name"
+                            placeholder="Event Name"
                             {...field}
                           />
                         </FormControl>
@@ -158,32 +166,73 @@ const ReleaseModal = (props: NewReleaseModalProps) => {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="label"
-                    render={({ field }) => (
-                      <FormItem className="space-y-1 w-[49%]">
-                        <FormLabel className="sr-only">Label</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="label"
-                            placeholder="Record Label"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription />
-                        <FormMessage className="text-xs leading-none !pt-0 !mt-0" />
-                      </FormItem>
-                    )}
-                  />
+
                   <FormField
                     control={form.control}
                     name="date"
                     render={({ field }) => (
                       <FormItem className="space-y-1 w-[49%]">
-                        <FormLabel className="sr-only">Release Date</FormLabel>
+                        <FormLabel className="sr-only">Event Date</FormLabel>
                         <FormControl>
                           <Input type="date" id="date" {...field} />
+                        </FormControl>
+                        <FormDescription />
+                        <FormMessage className="text-xs leading-none !pt-0 !mt-0" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="venue.name"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1 w-[49%]">
+                        <FormLabel className="sr-only">Label</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="venue.name"
+                            placeholder="Venue Name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription />
+                        <FormMessage className="text-xs leading-none !pt-0 !mt-0" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="venue.location"
+                    render={({ field }) => (
+                      <FormItem className="w-[49%] space-y-1">
+                        <FormLabel className="sr-only">
+                          Venue Location {"(optional)"}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            id="venue.location"
+                            placeholder="Venue Location"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription />
+                        <FormMessage className="text-xs leading-none !pt-0 !mt-0" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="venue.socialLink"
+                    render={({ field }) => (
+                      <FormItem className="w-full space-y-1">
+                        <FormLabel className="sr-only">Artist Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="venue.socialLink"
+                            placeholder="Venue Social Media Link (optional)"
+                            {...field}
+                          />
                         </FormControl>
                         <FormDescription />
                         <FormMessage className="text-xs leading-none !pt-0 !mt-0" />
@@ -197,7 +246,7 @@ const ReleaseModal = (props: NewReleaseModalProps) => {
                     render={({ field }) => (
                       <FormItem className="space-y-1 w-full">
                         <FormLabel className="sr-only">
-                          Release Description
+                          Event Description
                         </FormLabel>
                         <FormControl>
                           <Textarea
@@ -217,55 +266,19 @@ const ReleaseModal = (props: NewReleaseModalProps) => {
                     control={form.control}
                     name="imageSrc"
                     render={({ field, fieldState }) => (
-                      <FormItem className="space-y-1 w-full">
-                        <FormLabel className="sr-only">Artist Image</FormLabel>
+                      <FormItem className="space-y-1 w-full border border-white/20">
+                        <FormLabel className="sr-only">
+                          Event Flyer/Image
+                        </FormLabel>
                         <FormControl>
                           <FileUpload
-                            endpoint="releaseCover"
+                            endpoint="eventFlyer"
                             value={field.value}
                             onChange={field.onChange}
                           />
                         </FormControl>
                         <FormDescription />
                         <FormMessage className="text-xs leading-0" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="soundCloudLink"
-                    render={({ field }) => (
-                      <FormItem className="w-full space-y-1">
-                        <FormLabel className="sr-only">
-                          Soundcloud Link
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            id="soundCloudLink"
-                            placeholder="SoundCloud Link"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription />
-                        <FormMessage className="text-xs leading-none !pt-0 !mt-0" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="buyLink"
-                    render={({ field }) => (
-                      <FormItem className="w-full space-y-1">
-                        <FormLabel className="sr-only">Artist Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="buyLink"
-                            placeholder="Buy Link (optional)"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription />
-                        <FormMessage className="text-xs leading-none !pt-0 !mt-0" />
                       </FormItem>
                     )}
                   />
@@ -276,7 +289,7 @@ const ReleaseModal = (props: NewReleaseModalProps) => {
         </ScrollArea>
         <DialogFooter className="justify-end flex gap-2 w-full flex-row">
           <Button onClick={form.handleSubmit(onSubmit)} variant="defaultButton">
-            {release ? "Update" : "Create"}
+            {event ? "Update" : "Create"}
           </Button>
           <DialogClose asChild>
             <Button
@@ -293,4 +306,4 @@ const ReleaseModal = (props: NewReleaseModalProps) => {
   );
 };
 
-export default ReleaseModal;
+export default EventModal;

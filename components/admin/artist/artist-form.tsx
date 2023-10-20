@@ -1,4 +1,4 @@
-import FileUpload from '@/components/FileUpload';
+import FileUpload from '@/components/file-upload';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputSocial } from '@/components/ui/inputs/InputSocial';
@@ -6,7 +6,7 @@ import { InputTags } from '@/components/ui/inputs/InputTags';
 import { Textarea } from '@/components/ui/textarea';
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form';
-import { artistFormSchema } from '../modals/NewArtistModal';
+import { artistFormSchema } from '../modals/artist-modal';
 import * as z from 'zod';
 
 interface ArtistFormProps {

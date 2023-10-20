@@ -1,4 +1,4 @@
-import { ArtistSidebar } from "@/components/admin/artist/ArtistSidebar";
+import { ArtistSidebar } from "@/components/admin/artist/artist-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { db } from "@/lib/db";
 import React from "react";

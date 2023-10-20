@@ -1,25 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Release } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Delete, Edit2, MoreHorizontal, Plus } from "lucide-react";
-import NewReleaseModal from "../../modals/ReleaseModal";
-import axios from "axios";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import DeleteModal from "../../modals/DeleteModal";
+import DeleteModal from "../../modals/delete-modal";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
-import ReleaseModal from "../../modals/ReleaseModal";
+import ReleaseModal from "../../modals/release-modal";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -103,28 +89,15 @@ export const ReleaseColumnsTable: ColumnDef<Release>[] = [
   },
   {
     id: "actions",
+    header: "Actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const release = row.original;
-      const { toast } = useToast();
-      const router = useRouter();
-      const handleDelete = async () => {
-        const response = await axios.delete(
-          `/api/releases?releaseId=${release.id}`
-        );
-        if (response.status === 200) {
-          toast({
-            title: `Release deleted`,
-            description: `${release.name} deleted successfully`,
-          });
-          router.refresh();
-        }
-      };
-
+    cell: ({ row }: { row: any }) => {
+      const release: Release = row.original;
+      
       return (
         <div className="flex flex-row gap-1 items-end justify-end">
-          <ReleaseModal release={release} />
-          <DeleteModal item={release.name} handleDelete={handleDelete} />
+          <ReleaseModal release={release} artistId={release.artistId} />
+          <DeleteModal item={release} apiUrl={`/api/releases?releaseId=${release.id as string}`} />
         </div>
       );
     },

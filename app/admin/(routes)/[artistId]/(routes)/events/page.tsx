@@ -1,6 +1,5 @@
-import NewReleaseModal from "@/components/admin/modals/ReleaseModal";
-import EventsTable from "@/components/admin/releases copy/EventsTable";
-import ReleasesTable from "@/components/admin/releases/ReleasesTable";
+import EventModal from "@/components/admin/modals/event-modal";
+import EventsTable from "@/components/admin/events/events-table";
 import { db } from "@/lib/db";
 import { Artist } from "@prisma/client";
 import React from "react";
@@ -21,9 +20,9 @@ const EventsAdminPage = async (props: Props) => {
 
   return (
     <div className="space-y-2">
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 w-full justify-between items-center">
         <h1>Events</h1>
-        <NewReleaseModal artist={artist as Artist} />
+        <EventModal artist={artist as Artist} />
       </div>
       <EventsTable artist={artist as Artist} />
     </div>

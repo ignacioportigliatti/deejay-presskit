@@ -50,6 +50,7 @@ export async function DELETE(req: Request) {
 
 export async function PATCH(req: Request) {
   const artist: Artist = await req.json();
+  
   try {
     const updatedArtist: Artist = await db.artist.update({
       where: {

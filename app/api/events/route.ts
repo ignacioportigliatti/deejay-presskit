@@ -1,31 +1,31 @@
 import { db } from "@/lib/db";
-import { Release } from "@prisma/client";
+import { Event } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const body: Release = await req.json();
+  const body: Event = await req.json();
   try {
-    const newRelease = await db.release.create({
+    const newEvent = await db.event.create({
       data: {
         name: body.name,
-        label: body.label,
         date: body.date,
         imageSrc: body.imageSrc,
-        soundCloudLink: body.soundCloudLink,
-        buyLink: body.buyLink,
-        description: body.description,
-        format: body.format,
+        description: body.description as string,
+        venue: {
+          set: {
+            name: body.venue?.name as string,
+            location: body.venue?.location as string,
+            socialLink: body.venue?.socialLink as string,
+          }
+        },
         artist: {
           connect: {
             id: body.artistId,
           },
         },
       },
-      include: {
-        artist: true,
-      },
     });
-    return NextResponse.json(newRelease, {status: 200});
+    return NextResponse.json(newEvent, {status: 200});
   } catch (error) {
     console.error("[ADD_RELEASE]", error);
     return NextResponse.json({ error: error }, {status: 500});
@@ -34,16 +34,16 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
-  const releaseId = searchParams.get("releaseId");
+  const eventId = searchParams.get("eventId");
 
   try {
-    const deletedRelease: Release = await db.release.delete({
+    const deletedEvent: Event = await db.event.delete({
       where: {
-        id: releaseId as string,
+        id: eventId as string,
       },
     });
-    if (deletedRelease) {
-      return NextResponse.json(deletedRelease, { status: 200 });
+    if (deletedEvent) {
+      return NextResponse.json(deletedEvent, { status: 200 });
     } else {
       return new NextResponse("Bad Request", { status: 400 });
     }
@@ -54,34 +54,34 @@ export async function DELETE(req: Request) {
 }
 
 export async function PATCH(req: Request) {
-  const body: Release = await req.json();
-  
+  const body: Event = await req.json();
+
   try {
-    const updatedRelease: Release = await db.release.update({
+    const updatedEvent: Event = await db.event.update({
       where: {
         id: body.id as string,
       },
       data: {
         name: body.name,
-        label: body.label,
         date: body.date,
         imageSrc: body.imageSrc,
-        soundCloudLink: body.soundCloudLink,
-        buyLink: body.buyLink,
         description: body.description,
-        format: body.format,
+        venue: {
+          set: {
+            name: body.venue?.name as string,
+            location: body.venue?.location as string,
+            socialLink: body.venue?.socialLink as string,
+          }
+        },
         artist: {
           connect: {
             id: body.artistId,
-          }
-        }
+          },
+        },
       },
-      include: {
-        artist: true  
-      }
     });
-    if (updatedRelease) {
-      return NextResponse.json(updatedRelease, { status: 200 });
+    if (updatedEvent) {
+      return NextResponse.json(updatedEvent, { status: 200 });
     } else {
       return new NextResponse("Bad Request", { status: 400 });
     }

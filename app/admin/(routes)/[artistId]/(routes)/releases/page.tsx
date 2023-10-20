@@ -1,4 +1,4 @@
-import ReleaseModal from "@/components/admin/modals/ReleaseModal";
+import ReleaseModal from "@/components/admin/modals/release-modal";
 import ReleasesTable from "@/components/admin/releases/ReleasesTable";
 import { db } from "@/lib/db";
 import { Artist } from "@prisma/client";
@@ -20,7 +20,7 @@ const ReleasesAdminPage = async (props: Props) => {
 
   return (
     <div className="space-y-2">
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 w-full justify-between items-center">
         <h1>Releases</h1>
         <ReleaseModal artist={artist as Artist} />
       </div>

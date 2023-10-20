@@ -45,9 +45,12 @@ export function DataTablePagination<TData>({
             <span className="sr-only">Go to previous page</span>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <div className="flex px-2 items-center justify-center text-sm font-medium">
-            {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
-          </div>
+          {table.getPageCount() > 1 && (
+            <div className="flex px-2 items-center justify-center text-sm font-medium">
+              {table.getState().pagination.pageIndex + 1} /{" "}
+              {table.getPageCount()}
+            </div>
+          )}
           <Button
             variant="defaultButton"
             size={"xs"}

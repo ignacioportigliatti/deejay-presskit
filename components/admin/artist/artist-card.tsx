@@ -17,11 +17,11 @@ import { Artist } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import axios from "axios";
 
-
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { Delete, Edit } from "lucide-react";
-import DeleteModal from "../modals/DeleteModal";
+import DeleteModal from "../modals/delete-modal";
+import NewArtistModal from "../modals/artist-modal";
 
 interface ArtistCardProps {
   artist: Artist;
@@ -31,17 +31,16 @@ export const ArtistCard = (props: ArtistCardProps) => {
   const { artist } = props;
 
   const router = useRouter();
- const { toast } = useToast();
+  const { toast } = useToast();
 
   const handleArtistDelete = async () => {
     try {
-      const response = await axios
-        .delete(`/api/artists?artistId=${artist.id}`)
+      const response = await axios.delete(`/api/artists?artistId=${artist.id}`);
       if (response.status === 200) {
         toast({
           title: "Artist deleted",
           description: "Artist deleted successfully",
-        })
+        });
         router.refresh();
       }
     } catch (error) {
@@ -70,11 +69,8 @@ export const ArtistCard = (props: ArtistCardProps) => {
         </Avatar>
       </CardContent>
       <CardFooter className="flex justify-center gap-2">
-        <Button variant="defaultButton" size={'xs'} className="w-max px-2">
-          <Edit className="w-4 h-4" />
-          </Button>
-          <DeleteModal item={artist.name} handleDelete={handleArtistDelete} />
-        
+        <NewArtistModal artist={artist} socialLinks={artist.socialLinks} />
+        <DeleteModal item={artist} apiUrl={`/api/artists?artistId=${artist.id as string}`} />
       </CardFooter>
     </Card>
   );

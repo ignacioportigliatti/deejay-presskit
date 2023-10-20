@@ -1,6 +1,6 @@
 import { Artist } from "@prisma/client";
 import React from "react";
-import { ArtistCard } from "./ArtistCard";
+import { ArtistCard } from "./artist-card";
 import { cn } from "@/lib/utils";
 
 interface ArtistsGridProps {

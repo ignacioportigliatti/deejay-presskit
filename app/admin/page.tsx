@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
-import ArtistsGrid from "@/components/admin/artist/ArtistsGrid";
-import NewArtistModal from "@/components/admin/modals/NewArtistModal";
+import ArtistsGrid from "@/components/admin/artist/artists-grid";
+import NewArtistModal from "@/components/admin/modals/artist-modal";
 
 export default async function AdminPage() {
   const artists = await db.artist.findMany();

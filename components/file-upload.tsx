@@ -22,12 +22,12 @@ const FileUpload = (props: FileUploadProps) => {
 
   if (value && fileType !== "pdf") {
     return (
-      <div className="h-20 flex border rounded-md items-center justify-start w-full p-2">
-        <div className="relative w-20 h-20 flex items-center group">
+      <div className="flex rounded-md items-center justify-start w-full">
+        <div className="relative flex items-center group">
           <img
             src={value}
             alt=""
-            className="w-full h-full  object-cover rounded-lg p-3"
+            className="w-20 h-20  object-cover rounded-lg p-3"
           />
           <button
             onClick={() => onChange("")}

@@ -27,7 +27,7 @@ type SocialLinks {
 
 model Artist {
   id String @id @map("_id") @default(cuid())
-  name String
+  name String @unique
   bio String
   imageSrc String
   location String
@@ -53,10 +53,10 @@ type Venue {
 model Event {
   id String @id @map("_id") @default(cuid())
   name String
+  imageSrc String
   description String
   date String
-  imageSrc String
-  venue Venue?
+  venue Venue
 
   artistId String
   artist Artist @relation(fields: [artistId], references: [id])
@@ -65,7 +65,11 @@ model Event {
   updatedAt DateTime @updatedAt
 }
 
-
+enum ReleaseFormat {
+  Vinyl
+  Digital
+  VinylDigital
+}
 
 model Release {
   id String @id @map("_id") @default(cuid())
@@ -75,7 +79,8 @@ model Release {
   imageSrc String
   soundCloudLink String?
   buyLink String?
-  label String
+  label String?
+  format ReleaseFormat?
 
   artistId String
   artist Artist @relation(fields: [artistId], references: [id])

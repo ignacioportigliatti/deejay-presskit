@@ -1,6 +1,4 @@
-import ArtistEdit from "@/components/admin/artist/ArtistEdit";
-import NewReleaseModal from "@/components/admin/modals/ReleaseModal";
-import ReleasesTable from "@/components/admin/releases/ReleasesTable";
+import ArtistEdit from "@/components/admin/artist/artist-edit";
 import { db } from "@/lib/db";
 import { Artist } from "@prisma/client";
 import React from "react";
