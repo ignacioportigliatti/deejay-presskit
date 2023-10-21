@@ -19,6 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Release } from "@prisma/client";
+import ReleaseModal from "../modals/release-modal";
+import { FaFileAudio, FaRecordVinyl } from "react-icons/fa";
 
 interface ReleaseCardProps {
   release: Release;
@@ -27,7 +29,7 @@ interface ReleaseCardProps {
 export function ReleaseCard(props: ReleaseCardProps) {
   const { release } = props;
   return (
-    <Card className="md:w-[210px] hover:border-white/70 duration-300 w-full">
+    <Card className="md:w-full  opacity-80 hover:opacity-100 hover:border-white/70 duration-300 w-full">
       <CardHeader className="pb-2 md:w-[200px]  w-full">
         {release.imageSrc && (
           <img
@@ -37,21 +39,34 @@ export function ReleaseCard(props: ReleaseCardProps) {
           />
         )}
       </CardHeader>
-      <CardContent className="pb-2 md:w-[200px]  w-full">
-        <CardTitle className="text-lg">{release.name}</CardTitle>
+      <CardContent className="pb-4 md:w-[200px]  w-full">
+        <CardTitle className="text-lg leading-tight">
+          <h2>{release.name}</h2>
+        </CardTitle>
         <CardDescription className="text-xs">
-          <p>
-            {release.format === "VinylDigital"
-              ? "Vinyl & Digital"
-              : release.format}
-          </p>
           <p>{release.label}</p>
           <p>{release.date}</p>
+          <p>
+          {release.format === "VinylDigital" && (
+              <>
+                <FaRecordVinyl className="w-3 h-3 inline-block mr-1" />
+                <FaFileAudio className="w-3 h-3 inline-block mr-1" />
+              </>
+            )}
+            {release.format === "Vinyl" && (
+              <>
+                <FaRecordVinyl className="w-3 h-3 inline-block mr-1" />
+              </>
+            )}
+            {release.format === "Digital" && (
+              <>
+                <FaFileAudio className="w-3 h-3 inline-block mr-1" />
+              </>
+            )}
+          </p>
+          <ReleaseModal release={release} button={<button className="absolute inset-0 w-full h-full"></button>} />
         </CardDescription>
       </CardContent>
-      <CardFooter className="flex justify-start">
-        <Button variant="defaultButton">+ Info</Button>
-      </CardFooter>
     </Card>
   );
 }

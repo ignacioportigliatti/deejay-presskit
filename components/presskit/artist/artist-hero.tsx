@@ -81,7 +81,7 @@ const ArtistHero = (props: ArtistHeroProps) => {
                 <p className="text-sm font-light">Gigs</p>
               </Button>
             </Link>
-            <Link href={`/${artist.name}/tech-ride`}>
+            <Link href={`/${artist.name}/tech-rider`}>
               <Button
                 variant="defaultButton"
                 className="w-full flex items-center justify-center flex-col gap-1 border rounded-lg p-4"

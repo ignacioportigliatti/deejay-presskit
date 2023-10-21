@@ -26,6 +26,10 @@ const ArtistLayout = async (props: ArtistLayoutProps) => {
       title: "Events",
       href: `/admin/${params.artistId}/events`,
     },
+    {
+      title: "Tech Rider",
+      href: `/admin/${params.artistId}/tech-rider`,
+    },
   ];
 
   const artist = await db.artist.findUnique({

@@ -45,7 +45,7 @@ const NavBar = () => {
     },
     {
       name: "Tech Ride",
-      href: `/${selectedArtist?.name}/tech-ride`,
+      href: `/${selectedArtist?.name}/tech-rider`,
       icon: <SiPioneerdj className="h-3 w-3"/>,
     },
   ];
@@ -54,11 +54,17 @@ const NavBar = () => {
     <div className="fixed flex items-center px-9 justify-between z-50 text-white top-0 h-16 w-full">
       <div>
         {pathname !== `/${selectedArtist?.name}` && (
-            selectedArtist?.name
+            <Link href={`/${selectedArtist?.name}`}>
+              {selectedArtist?.name}
+            </Link>
         )}        
       </div>
       <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger onMouseEnter={() => setOpen(true)}  onMouseLeave={() => {
+          setTimeout(() => {
+            setOpen(false)
+          }, 10000);
+        }} asChild>
           <Button variant="outline" className="capitalize">
             {navItems.find((item) => item.href === pathname)?.name}
           </Button>
