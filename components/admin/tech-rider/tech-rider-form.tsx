@@ -1,180 +1,154 @@
 "use client";
 
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
-import { Form, FormControl, FormField } from "@/components/ui/form";
-import TechRiderFormInput from "./tech-rider-form-input";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
+import { fi } from "date-fns/locale";
 import axios from "axios";
+import { TechRider } from "@prisma/client";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
+import { useEffect } from "react";
 
 interface TechRiderFormProps {
+  artistId: string;
+  techRiderEntry?: any;
   title: string;
-  description: string;
-  brands: string[];
   techRiderType: string;
+  brands: {
+    name: string;
+    icon: React.ReactNode;
+    models: string[];
+  }[];
+  description: string;
 }
 
-const techRiderFormSchema = z.array(
-  z.object({
-    brand: z.string(),
-    model: z.string(),
-  })
-);
+const BrandSchema = z.object({
+  brand: z.string(),
+  models: z.array(z.string()),
+});
 
-type TechRiderField = {
-  brand: string;
-  model: string;
-};
+const FormSchema = z.array(BrandSchema);
 
-const TechRiderForm = (props: TechRiderFormProps) => {
-  const { title, description, brands, techRiderType } = props;
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const form = useForm<{
-    techRider: TechRiderField[];
-  }>({
-    defaultValues: {
-      techRider: [
-        {
-          brand: "",
-          model: "",
-        },
-      ],
-    },
-    resolver: zodResolver(techRiderFormSchema),
+export const TechRiderForm = (props: TechRiderFormProps) => {
+  const {
+    title,
+    techRiderType,
+    brands,
+    description,
+    techRiderEntry,
+    artistId,
+  } = props;
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    values: techRiderEntry ? techRiderEntry[0][techRiderType] : brands.map((brand) => ({
+      brand: brand.name,
+      models: [],
+    })),
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "techRider",
-  });
-
-  const addField = () => {
-    append({
-      brand: "",
-      model: "",
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const response = await axios.post(`/api/tech-rider/`, {
+      data: [data],
+      techRiderType,
+      artistId,
     });
-  };
-
-  const onSubmit: SubmitHandler<{ techRider: TechRiderField[] }> = async (
-    values
-  ) => {
-    try {
-      const response = await axios.patch("/api/tech-rider", {
-        techRider: values,
-        techRiderType,
-      });
-
-      if (response.status === 200) {
-        router.refresh();
-        toast({
-          title: "Success",
-          description: "Your changes have been saved.",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "Something went wrong with your request.",
-        });
-      }
-    } catch (error) {
-      console.error(error);
+    if (response.status === 200) {
       toast({
-        title: "Error",
-        description: "Something went wrong with your request.",
+        title: "Changes saved.",
+        description: (
+          <p>Information saved for {techRiderType}</p>
+        ),
+      });
+    } else {
+      toast({
+        title: "An error occurred.",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          </pre>
+        ),
       });
     }
-  };
+  }
+
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card>
+      <CardContent className="flex flex-col pt-9 h-full justify-between space-y-8">
+      <CardTitle>{title}</CardTitle>
         <Form {...form}>
-          <form
-            className="flex flex-col gap-1"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            {fields.map((field, index) => (
-              <div key={field.id}>
-                <FormField
-                  control={form.control}
-                  name="techRider"
-                  render={({ field }) => (
-                    <div className="flex gap-1 h-full">
-                      <div className="grid grid-cols-2 w-full items-center gap-1">
-                        <div className="flex flex-col space-y-1.5">
-                          <Select>
-                            <SelectTrigger id="brand">
-                              <SelectValue placeholder="Brand" />
-                            </SelectTrigger>
-                            <SelectContent position="popper">
-                              {brands.map((brand) => (
-                                <SelectItem
-                                  value={field.value[index].brand || brand}
-                                  key={brand}
-                                  id={brand}
-                                >
-                                  {brand}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                          <FormControl>
-                            <Input
-                              id="name"
-                              defaultValue={field.value[index].model}
-                              placeholder="Model"
-                            />
-                          </FormControl>
-                        </div>
-                      </div>
-                      <button
-                        onClick={addField}
-                        className="border rounded-md w-12 hover:bg-white/20 duration-300"
-                      >
-                        +
-                      </button>
-                    </div>
-                  )}
-                />
-              </div>
-            ))}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full justify-between space-y-8">
+            <Accordion type="single" collapsible>
+              {brands.map((brand, index) => (
+                <AccordionItem key={brand.name} value={`brand-${index}`}>
+                  <AccordionTrigger>{brand.name}</AccordionTrigger>
+                  <AccordionContent>
+                    <FormItem>
+                      {brand.models.map((model) => (
+                        <FormField
+                          key={model}
+                          control={form.control}
+                          name={`${index}.models`}
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={model}
+                                className="flex flex-row items-start space-x-3 space-y-0"
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(model)}
+                                    value={model}
+                                    onCheckedChange={(value) => {
+                                      field.onChange(
+                                        field.value?.includes(model)
+                                          ? field.value.filter(
+                                              (item: string) => item !== model
+                                            )
+                                          : field.value
+                                          ? [...field.value, model]
+                                          : [model]
+                                      );
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  {model}
+                                </FormLabel>
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      ))}
+                      <FormMessage />
+                    </FormItem>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            <Button variant={"defaultButton"} type="submit">Submit</Button>
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex gap-1 justify-end">
-        <Button>Save Changes</Button>
-      </CardFooter>
     </Card>
   );
 };
-
-export default TechRiderForm;

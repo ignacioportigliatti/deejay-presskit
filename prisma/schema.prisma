@@ -90,37 +90,16 @@ model Release {
   updatedAt DateTime @updatedAt
 }
 
-enum TechBrands {
-  ALLEN_HEATH
-  AUDIO_TECHNICA
-  DENON
-  NUMARK
-  PIONEER
-  RANE
-  TECHNICS
-  VESTAX
-}
-
-type TechMixer {
-  brand TechBrands
-  model String
-}
-
-type TechCdPlayer {
-  brand TechBrands
-  model String
-}
-
-type TechTurntable {
-  brand TechBrands
-  model String
+type TechRiderObject {
+  brand String
+  models String[]
 }
 
 model TechRider {
   id String @id @map("_id") @default(cuid())
-  mixers TechMixer[]
-  cdPlayers TechCdPlayer[]
-  turntables TechTurntable[]
+  mixers TechRiderObject[]
+  cdPlayers TechRiderObject[]
+  turntables TechRiderObject[]
 
   artistId String
   artist Artist @relation(fields: [artistId], references: [id])

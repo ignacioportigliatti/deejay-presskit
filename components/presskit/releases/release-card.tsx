@@ -41,9 +41,9 @@ export function ReleaseCard(props: ReleaseCardProps) {
       </CardHeader>
       <CardContent className="pb-4 md:w-[200px]  w-full">
         <CardTitle className="text-lg leading-tight">
-          <h2>{release.name}</h2>
+          {release.name}
         </CardTitle>
-        <CardDescription className="text-xs">
+        <div className="text-xs">
           <p>{release.label}</p>
           <p>{release.date}</p>
           <p>
@@ -65,7 +65,7 @@ export function ReleaseCard(props: ReleaseCardProps) {
             )}
           </p>
           <ReleaseModal release={release} button={<button className="absolute inset-0 w-full h-full"></button>} />
-        </CardDescription>
+        </div>
       </CardContent>
     </Card>
   );

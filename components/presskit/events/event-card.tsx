@@ -40,12 +40,12 @@ export function EventCard(props: EventCardProps) {
       </CardHeader>
       <CardContent className="p-2 md:w-[200px]  w-full">
         <CardTitle className="text-lg">{event.name}</CardTitle>
-        <CardDescription className="text-xs ">
+        <div className="text-xs ">
           <p>{event.venue.name}</p>
           <p>{event.venue.location}</p>
           <p>{event.date}</p>
           <EventModal event={event} button={<button className="absolute top-0 w-full h-full"></button>} />
-        </CardDescription>
+        </div>
       </CardContent>
     </Card>
   );

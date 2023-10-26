@@ -44,7 +44,7 @@ const NavBar = () => {
       icon: <Calendar className="h-3 w-3"/>,
     },
     {
-      name: "Tech Ride",
+      name: "Tech Rider",
       href: `/${selectedArtist?.name}/tech-rider`,
       icon: <SiPioneerdj className="h-3 w-3"/>,
     },

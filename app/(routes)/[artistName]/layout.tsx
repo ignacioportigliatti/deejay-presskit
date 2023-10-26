@@ -28,6 +28,11 @@ const ArtistPresskitLayout = async (props: ArtistLayoutProps) => {
       artistId: artist?.id
     }
   });
+  const techRider = await db.techRider.findMany({
+    where: {
+      artistId: artist?.id
+    }
+  });
 
   return (
     <main>
@@ -37,7 +42,7 @@ const ArtistPresskitLayout = async (props: ArtistLayoutProps) => {
         <div className="flex min-h-screen justify-center items-center">
         {children}
         </div>
-        <ArtistSetter artist={artist} dataReleases={releases} dataEvents={events} />
+        <ArtistSetter artist={artist} dataReleases={releases} dataEvents={events} dataTechRider={techRider[0]} />
       </div>) : (
         <div>
           Artist not found

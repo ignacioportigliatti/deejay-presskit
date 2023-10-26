@@ -1,14 +1,19 @@
 import TechRiderSettings from '@/components/admin/tech-rider/tech-rider-settings'
 import React from 'react'
 
-interface Props {
-    
+interface TechRiderPageProps {
+    params: {
+        artistId: string;
+    }
 }
 
-const TechRiderPage = (props: Props) => {
+const TechRiderPage = async (props: TechRiderPageProps) => {
+    const { params } = props;
+    const { artistId } = params;
+
     return (
         <div>
-            <TechRiderSettings />
+            <TechRiderSettings artistId={artistId} />
         </div>
     )
 }

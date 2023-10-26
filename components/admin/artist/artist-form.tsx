@@ -100,7 +100,7 @@ const ArtistForm = (props: ArtistFormProps) => {
                     control={form.control}
                     name="imageSrc"
                     render={({ field, fieldState }) => (
-                      <FormItem className="space-y-1">
+                      <FormItem className="space-y-1 border rounded-md">
                         <FormLabel className="sr-only">Artist Image</FormLabel>
                         <FormControl>
                           <FileUpload
