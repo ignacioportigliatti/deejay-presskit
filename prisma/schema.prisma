@@ -55,6 +55,7 @@ model Event {
   id String @id @map("_id") @default(cuid())
   name String
   imageSrc String
+  photosUrls String[]
   description String
   date String
   venue Venue

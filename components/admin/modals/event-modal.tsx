@@ -41,11 +41,15 @@ interface NewEventModalProps {
 
 const eventFormSchema = z.object({
   name: z.string().min(1),
-  description: z.string().max(150, {
-    message: "Description must be less than 150 characters",
-  }).optional(),
+  description: z
+    .string()
+    .max(150, {
+      message: "Description must be less than 150 characters",
+    })
+    .optional(),
   date: z.string(),
   imageSrc: z.string(),
+  eventPhotos: z.array(z.string()).optional(),
   venue: z.object({
     name: z.string(),
     location: z.string(),
@@ -63,6 +67,7 @@ const EventModal = (props: NewEventModalProps) => {
       description: event ? event.description : "",
       date: event ? event.date : "",
       imageSrc: event ? event.imageSrc : "",
+      eventPhotos: event ? event.photosUrls : [],
       venue: {
         name: event ? event.venue.name : "",
         location: event ? event.venue.location : "",
@@ -97,7 +102,10 @@ const EventModal = (props: NewEventModalProps) => {
         }
         setOpen(false);
       } else {
-        const response = await axios.post("/api/events", {...newEvent, artistId: artist?.id});
+        const response = await axios.post("/api/events", {
+          ...newEvent,
+          artistId: artist?.id,
+        });
         if (response.status === 200) {
           form.reset();
           router.refresh();
@@ -127,17 +135,17 @@ const EventModal = (props: NewEventModalProps) => {
           </Button>
         ) : (
           <Button className="w-16" size={"xs"} variant={"defaultButton"}>
-            + Add {artist?.id}
+            + Add
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="w-11/12 sm:w-full">
+      <DialogContent className="w-11/12 max-w-3xl sm:w-full">
         <DialogHeader>
           <DialogTitle>
             {event ? `Edit ${event.name}` : "Add Event"}
           </DialogTitle>
           <DialogDescription>
-           {"Add a new event to your artist's presskit."}
+            {"Add a new event to your artist's presskit."}
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[80vh]">
@@ -148,11 +156,12 @@ const EventModal = (props: NewEventModalProps) => {
                   className="flex flex-wrap space-x-1 w-[80%] sm:w-full sm:max-w-full"
                   onSubmit={form.handleSubmit(onSubmit)}
                 >
+                  <div className="w-full gap-2 grid grid-cols-2">
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
-                      <FormItem className="space-y-1 w-[49%]">
+                      <FormItem className="space-y-1 w-full">
                         <FormLabel className="sr-only">Event Name</FormLabel>
                         <FormControl>
                           <Input
@@ -171,7 +180,7 @@ const EventModal = (props: NewEventModalProps) => {
                     control={form.control}
                     name="date"
                     render={({ field }) => (
-                      <FormItem className="space-y-1 w-[49%]">
+                      <FormItem className="ml-0 space-y-1 w-full">
                         <FormLabel className="sr-only">Event Date</FormLabel>
                         <FormControl>
                           <Input type="date" id="date" {...field} />
@@ -181,12 +190,13 @@ const EventModal = (props: NewEventModalProps) => {
                       </FormItem>
                     )}
                   />
+                  </div>
 
                   <FormField
                     control={form.control}
                     name="venue.name"
                     render={({ field }) => (
-                      <FormItem className="space-y-1 w-[49%]">
+                      <FormItem className="space-y-1 w-full">
                         <FormLabel className="sr-only">Label</FormLabel>
                         <FormControl>
                           <Input
@@ -201,11 +211,12 @@ const EventModal = (props: NewEventModalProps) => {
                     )}
                   />
 
+                  <div className="w-full gap-2 grid grid-cols-2 !ml-0 ">
                   <FormField
                     control={form.control}
                     name="venue.location"
                     render={({ field }) => (
-                      <FormItem className="w-[49%] space-y-1">
+                      <FormItem className="w-full space-y-1">
                         <FormLabel className="sr-only">
                           Venue Location {"(optional)"}
                         </FormLabel>
@@ -239,12 +250,13 @@ const EventModal = (props: NewEventModalProps) => {
                       </FormItem>
                     )}
                   />
+                  </div>
 
                   <FormField
                     control={form.control}
                     name="description"
                     render={({ field }) => (
-                      <FormItem className="space-y-1 w-full">
+                      <FormItem className=" space-y-1 w-full !ml-0 ">
                         <FormLabel className="sr-only">
                           Event Description
                         </FormLabel>
@@ -261,27 +273,50 @@ const EventModal = (props: NewEventModalProps) => {
                       </FormItem>
                     )}
                   />
-
-                  <FormField
-                    control={form.control}
-                    name="imageSrc"
-                    render={({ field, fieldState }) => (
-                      <FormItem className="space-y-1 w-full border border-white/20">
-                        <FormLabel className="sr-only">
-                          Event Flyer/Image
-                        </FormLabel>
-                        <FormControl>
-                          <FileUpload
-                            endpoint="eventFlyer"
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormDescription />
-                        <FormMessage className="text-xs leading-0" />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="flex w-full gap-2 !ml-0 ">
+                    <div className="w-[25%]">
+                      <FormLabel className="mb-1">Event Flyer</FormLabel>
+                      <FormField
+                        control={form.control}
+                        name="imageSrc"
+                        render={({ field, fieldState }) => (
+                          <FormItem className="space-y-1 w-full rounded-md  border  border-white/20 hover:border-white/50 ">
+                            <FormControl>
+                              <FileUpload
+                                endpoint="eventFlyer"
+                                value={field.value}
+                                onChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormDescription />
+                            <FormMessage className="text-xs leading-0" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <FormLabel className="mb-1">
+                        Event Photos {"(optional)"}
+                      </FormLabel>
+                      <FormField
+                        control={form.control}
+                        name="eventPhotos"
+                        render={({ field, fieldState }) => (
+                          <FormItem className="space-y-1 w-full rounded-md  border  border-white/20 hover:border-white/50 duration-300">
+                            <FormControl>
+                              <FileUpload
+                                endpoint="eventPhotos"
+                                value={field.value as string[]}
+                                onChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormDescription />
+                            <FormMessage className="text-xs leading-0" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
                 </form>
               </Form>
             </div>

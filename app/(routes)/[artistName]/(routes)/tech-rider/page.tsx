@@ -7,7 +7,7 @@ interface Props {
 
 const TechRidePage = (props: Props) => {
     return (
-        <div className='pt-16'>
+        <div className='max-w-[900px] p-9 lg:p-0 pt-16'>
             <TechRiderGrid />
         </div>
     )

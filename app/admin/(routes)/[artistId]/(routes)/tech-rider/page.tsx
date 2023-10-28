@@ -12,7 +12,7 @@ const TechRiderPage = async (props: TechRiderPageProps) => {
     const { artistId } = params;
 
     return (
-        <div>
+        <div >
             <TechRiderSettings artistId={artistId} />
         </div>
     )

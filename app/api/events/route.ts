@@ -10,6 +10,7 @@ export async function POST(req: Request) {
         name: body.name,
         date: body.date,
         imageSrc: body.imageSrc,
+        photosUrls: body.photosUrls,
         description: body.description as string,
         venue: {
           set: {

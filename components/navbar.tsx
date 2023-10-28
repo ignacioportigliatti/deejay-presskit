@@ -18,6 +18,7 @@ import { ArrowRightFromLine, Calendar, Home } from "lucide-react";
 import { FaRecordVinyl } from "react-icons/fa";
 import { SiPioneerdj } from "react-icons/si";
 import { useSelectedArtist } from "@/state/selected-artist";
+import { cn } from "@/lib/utils";
 
 
 const NavBar = () => {
@@ -51,7 +52,9 @@ const NavBar = () => {
   ];
 
   return (
-    <div className="fixed flex items-center px-9 justify-between z-50 text-white top-0 h-16 w-full">
+    <div className={cn("fixed flex items-center px-9 justify-between z-50 text-white top-0 h-16 w-full", 
+      pathname !== `/${selectedArtist?.name}` ? "backdrop-blur-lg bg-[#0c0a09]/50" : ""
+    )}>
       <div>
         {pathname !== `/${selectedArtist?.name}` && (
             <Link href={`/${selectedArtist?.name}`}>
