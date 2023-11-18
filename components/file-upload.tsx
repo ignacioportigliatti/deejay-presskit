@@ -41,8 +41,8 @@ const FileUpload = (props: FileUploadProps) => {
         )}
         {Array.isArray(value) && (
           <div className="flex space-x-2">
-            {value.map((v) => (
-              <div className="relative flex items-center group">
+            {value.map((v, i) => (
+              <div key={`value-${i}`} className="relative flex items-center group">
                 <img
                   src={v}
                   alt=""
