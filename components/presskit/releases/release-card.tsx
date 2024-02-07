@@ -21,6 +21,7 @@ import {
 import { Release } from "@prisma/client";
 import ReleaseModal from "../modals/release-modal";
 import { FaFileAudio, FaRecordVinyl } from "react-icons/fa";
+import Image from "next/image";
 
 interface ReleaseCardProps {
   release: Release;
@@ -32,7 +33,7 @@ export function ReleaseCard(props: ReleaseCardProps) {
     <Card className="md:w-full  opacity-80 hover:opacity-100 hover:border-white/70 duration-300 w-full">
       <CardHeader className="pb-2 md:w-[200px]  w-full">
         {release.imageSrc && (
-          <img
+          <Image
             src={release.imageSrc}
             alt={release.name}
             className=" aspect-square object-cover"

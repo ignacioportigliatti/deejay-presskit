@@ -8,6 +8,7 @@ import { SiPioneerdj } from "react-icons/si";
 import { FaRecordVinyl } from "react-icons/fa";
 import BiographyModal from "../modals/biography-modal";
 import Link from "next/link";
+import Image from "next/image";
 
 interface ArtistHeroProps {
   artist: Artist;
@@ -18,8 +19,8 @@ const ArtistHero = (props: ArtistHeroProps) => {
 
   return (
     <div className="container p-8 lg:p-0 relative h-full min-h-screen lg:max-h-screen flex-col items-center justify-center lg:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <div className="relative max-h-96 lg:max-h-screen mx-auto lg:h-full max-w-96 lg:w-full aspect-square flex-col lg:px-20 lg:py-14 text-white lg:dark:border-r lg:flex">
-        <img
+      <div className="relative max-h-96 lg:max-h-screen mx-auto lg:h-full max-w-96 lg:max-w-full aspect-square flex-col lg:px-20 lg:py-14 text-white lg:dark:border-r lg:flex">
+        <Image
           className=" lg:absolute lg:p-0 top-0 left-0 w-full max-h-[50vh] lg:max-h-full h-full lg:rounded-none rounded-[4rem] object-cover  object-top"
           src={artist.imageSrc}
           alt={`${artist.name}`}

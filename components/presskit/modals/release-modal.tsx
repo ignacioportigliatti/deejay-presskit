@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Artist, Release } from "@prisma/client";
 import { useSelectedArtist } from "@/state/selected-artist";
 import ReactPlayer from "react-player/soundcloud";
+import Image from "next/image";
 
 interface ReleaseModalProps {
   release: Release;
@@ -32,7 +33,7 @@ const ReleaseModal = (props: ReleaseModalProps) => {
       <DialogContent className="w-11/12 sm:w-full max-w-[720px]">
         <DialogHeader>
           <DialogTitle className="text-3xl flex items-start gap-4">
-            <img
+            <Image
               src={release.imageSrc}
               className="w-36 h-36 object-cover rounded-md"
               alt={`${release.name} cover`}

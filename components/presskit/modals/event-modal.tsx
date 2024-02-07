@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Artist, Event } from "@prisma/client";
 import { useSelectedArtist } from "@/state/selected-artist";
 import ReactPlayer from "react-player/soundcloud";
+import Image from "next/image";
 
 interface EventModalProps {
   event: Event;
@@ -32,7 +33,7 @@ const EventModal = (props: EventModalProps) => {
       <DialogContent className="w-11/12 sm:w-full max-w-[720px]">
         <DialogHeader>
           <DialogTitle className="text-3xl flex items-start gap-4">
-            <img
+            <Image
               src={event.imageSrc}
               className="w-36 h-36 object-cover rounded-md"
               alt={`${event.name} cover`}
@@ -56,7 +57,7 @@ const EventModal = (props: EventModalProps) => {
             <p className="space-y-2"></p>
           </DialogDescription>
           <div className="flex !mt-2 h-60 gap-1 ">
-            <img src={event.imageSrc} alt={event.name} />
+            <Image src={event.imageSrc} alt={event.name} />
           </div>
         </DialogHeader>
 

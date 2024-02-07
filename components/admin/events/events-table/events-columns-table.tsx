@@ -20,6 +20,7 @@ import DeleteModal from "../../modals/delete-modal";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import EventModal from "../../modals/event-modal";
+import Image from "next/image";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -51,7 +52,7 @@ export const EventsColumnsTable: ColumnDef<Event>[] = [
       const imageSrc = row.original.imageSrc;
       return (
         <div className="">
-          <img
+          <Image
             className="w-12 h-12 object-cover rounded-md object-center"
             src={imageSrc as string}
             alt=""

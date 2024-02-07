@@ -35,7 +35,7 @@ export const ArtistCard = (props: ArtistCardProps) => {
 
   const handleArtistDelete = async () => {
     try {
-      const response = await axios.delete(`/api/artists?artistId=${artist.id}`);
+      const response = await axios.delete(`s?artistId=${artist.id}`);
       if (response.status === 200) {
         toast({
           title: "Artist deleted",
