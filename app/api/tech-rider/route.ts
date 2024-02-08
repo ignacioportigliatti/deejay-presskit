@@ -1,14 +1,13 @@
 import { db } from "@/lib/db";
-import { TechRider, } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 interface TechRiderEntry {
   data: [
     {
-        brand: string;
-        models: string;
+      brand: string;
+      models: string;
     }
-  ]
+  ];
   artistId: string;
   techRiderType: string;
 }
@@ -21,7 +20,6 @@ export async function POST(req: Request) {
       artistId: techRider.artistId,
     },
   });
-
 
   const techRiderExists = dbTechRider !== null;
 
@@ -42,21 +40,21 @@ export async function POST(req: Request) {
       console.log("[CREATE_TECHRIDER]", newTechRider);
       try {
         const updatedTechRider = await db.techRider.update({
-        where: {
+          where: {
             id: newTechRider.id,
-        },
-        data: {
+          },
+          data: {
             [techRider.techRiderType]: {
-            set: techRider.data[0]
+              set: techRider.data[0],
             },
-        },
+          },
         });
         console.log("[UPDATE_TECHRIDER]", updatedTechRider);
-        return NextResponse.json(updatedTechRider, {status: 200});
-    } catch (error) {
+        return NextResponse.json(updatedTechRider, { status: 200 });
+      } catch (error) {
         console.error("[UPDATE_TECHRIDER]", error);
         return new NextResponse("Internal Server Error", { status: 500 });
-    }
+      }
     } catch (error) {
       console.error("[CREATE_TECHRIDER]", error);
       return new NextResponse("Internal Server Error", { status: 500 });
@@ -69,17 +67,15 @@ export async function POST(req: Request) {
         },
         data: {
           [techRider.techRiderType]: {
-           set: techRider.data[0]
+            set: techRider.data[0],
           },
         },
       });
       console.log("[UPDATE_TECHRIDER]", updatedTechRider);
-      return NextResponse.json(updatedTechRider, {status: 200});
+      return NextResponse.json(updatedTechRider, { status: 200 });
     } catch (error) {
       console.error("[UPDATE_TECHRIDER]", error);
       return new NextResponse("Internal Server Error", { status: 500 });
     }
   }
-
-    
 }

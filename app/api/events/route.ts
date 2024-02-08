@@ -49,7 +49,7 @@ export async function DELETE(req: Request) {
       return new NextResponse("Bad Request", { status: 400 });
     }
   } catch (error) {
-    console.error("[DELETE_ARTIST]", error);
+    console.error("[DELETE_GIG]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
@@ -87,7 +87,7 @@ export async function PATCH(req: Request) {
       return new NextResponse("Bad Request", { status: 400 });
     }
   } catch (error) {
-    console.error("[UPDATE_RELEASE]", error);
+    console.error("[UPDATE_GIG]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

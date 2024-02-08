@@ -38,7 +38,7 @@ export const ReleaseColumnsTable: ColumnDef<Release>[] = [
       const imageSrc = row.original.imageSrc;
       return (
         <div className="">
-          <Image
+          <img
             className="w-12 h-12 object-cover rounded-md object-center"
             src={imageSrc as string}
             alt=""

@@ -32,7 +32,7 @@ export function EventCard(props: EventCardProps) {
     <Card className="md:w-[210px] opacity-80 hover:opacity-100 hover:border-white/70 relative duration-300 !p-0 w-full">
       <CardHeader className="p-0">
         {event.imageSrc && (
-          <Image
+          <img
             src={event.imageSrc}
             alt={event.name}
             className="object-cover rounded-t-md"

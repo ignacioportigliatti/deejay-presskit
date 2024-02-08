@@ -26,7 +26,7 @@ const FileUpload = (props: FileUploadProps) => {
       <div className="flex rounded-md items-center justify-start w-full">
         {typeof value === "string" && (
           <div className="relative flex items-center group">
-            <Image
+            <img
               src={value}
               alt=""
               className="w-20 h-20 object-cover rounded-lg p-3"
@@ -44,7 +44,7 @@ const FileUpload = (props: FileUploadProps) => {
           <div className="flex space-x-2">
             {value.map((v, i) => (
               <div key={`value-${i}`} className="relative flex items-center group">
-                <Image
+                <img
                   src={v}
                   alt=""
                   className="w-20 h-20 object-cover rounded-lg p-3"

@@ -33,7 +33,7 @@ const ReleaseModal = (props: ReleaseModalProps) => {
       <DialogContent className="w-11/12 sm:w-full max-w-[720px]">
         <DialogHeader>
           <DialogTitle className="text-3xl flex items-start gap-4">
-            <Image
+            <img
               src={release.imageSrc}
               className="w-36 h-36 object-cover rounded-md"
               alt={`${release.name} cover`}
