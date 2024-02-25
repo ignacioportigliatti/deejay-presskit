@@ -11,7 +11,7 @@ const ReleasesPage = async (props: ReleasesPageProps) => {
   const { params } = props;
 
   return (
-    <div className="h-full flex items-start justify-start p-4 md:p-0 lg:max-w-[960px]">
+    <div className="h-full lg:px-24 lg:py-20">
       <ReleasesGrid />
     </div>
   );

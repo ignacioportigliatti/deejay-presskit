@@ -30,7 +30,7 @@ const ReleaseModal = (props: ReleaseModalProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>{button}</DialogTrigger>
-      <DialogContent className="w-11/12 sm:w-full max-w-[720px]">
+      <DialogContent className="w-11/12 py-10 sm:w-full max-w-[720px]">
         <DialogHeader>
           <DialogTitle className="text-3xl flex items-start gap-4">
             <img
@@ -50,7 +50,6 @@ const ReleaseModal = (props: ReleaseModalProps) => {
                   : release.format}
               </h6>
               <p className="text-xs font-light mt-2">
-                {release.description}
                 {release.description}
               </p>
             </div>

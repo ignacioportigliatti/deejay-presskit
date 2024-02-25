@@ -30,8 +30,8 @@ interface ReleaseCardProps {
 export function ReleaseCard(props: ReleaseCardProps) {
   const { release } = props;
   return (
-    <Card className="md:w-full  opacity-80 hover:opacity-100 hover:border-white/70 duration-300 w-full">
-      <CardHeader className="pb-2 md:w-[200px]  w-full">
+    <Card className="opacity-80 hover:opacity-100 duration-300 relative">
+      <CardHeader className="pb-2 w-full">
         {release.imageSrc && (
           <img
             src={release.imageSrc}
@@ -48,7 +48,7 @@ export function ReleaseCard(props: ReleaseCardProps) {
           <p>{release.label}</p>
           <p>{release.date}</p>
           <p>
-          {release.format === "VinylDigital" && (
+            {release.format === "VinylDigital" && (
               <>
                 <FaRecordVinyl className="w-3 h-3 inline-block mr-1" />
                 <FaFileAudio className="w-3 h-3 inline-block mr-1" />
@@ -65,7 +65,7 @@ export function ReleaseCard(props: ReleaseCardProps) {
               </>
             )}
           </p>
-          <ReleaseModal release={release} button={<button className="absolute inset-0 w-full h-full"></button>} />
+          <ReleaseModal release={release} button={<button className="absolute top-0 left-0 w-full h-full"></button>} />
         </div>
       </CardContent>
     </Card>
